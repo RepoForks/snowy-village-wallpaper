@@ -165,25 +165,40 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
         if (portraitLayers.isEmpty()) {
             return;
         }
+        float portraitRatio = getPortraitRatio();
+        resizeLayers(portraitRatio, portraitLayers);
+
+        float landscapeRatio = getLandscapeRatio();
+        resizeLayers(landscapeRatio, landscapeLayers);
+
+        resizeSnowLayers(portraitRatio);
+    }
+
+    private float getPortraitRatio() {
         int bitmapHeight = portraitLayers.get(0).getTexture().getBitmapHeight();
-        float portraitRatio = (float) height / bitmapHeight;
-        for (Quad quad : portraitLayers) {
-            resizeLayer(quad, portraitRatio);
-        }
-        bitmapHeight = landscapeLayers.get(0).getTexture().getBitmapHeight();
-        float landscapeRatio = (float) height / bitmapHeight;
-        for (Quad quad : landscapeLayers) {
+        return (float) height / bitmapHeight;
+    }
+
+    private float getLandscapeRatio() {
+        int bitmapHeight = landscapeLayers.get(0).getTexture().getBitmapHeight();
+        return (float) height / bitmapHeight;
+    }
+
+    private void resizeLayers(float landscapeRatio, List<Quad> layers) {
+        for (Quad quad : layers) {
             resizeLayer(quad, landscapeRatio);
         }
-
-        resizeLayer(snowFlakesQuads.get(0), portraitRatio * SnowFlakeTypes.SMALL.getTextureRatio());
-        resizeLayer(snowFlakesQuads.get(1), portraitRatio * SnowFlakeTypes.MEDIUM.getTextureRatio());
-        resizeLayer(snowFlakesQuads.get(2), portraitRatio * SnowFlakeTypes.BIG.getTextureRatio());
     }
 
     private void resizeLayer(Quad quad, float ratio) {
         quad.setHeight(quad.getTexture().getBitmapHeight() * ratio);
         quad.setWidth(quad.getTexture().getBitmapWidth() * ratio);
+    }
+
+    private void resizeSnowLayers(float portraitRatio) {
+        resizeLayer(snowFlakesQuads.get(0), portraitRatio * SnowFlakeTypes.SMALL.getTextureRatio());
+        resizeLayer(snowFlakesQuads.get(1), portraitRatio * SnowFlakeTypes.MEDIUM.getTextureRatio());
+        resizeLayer(snowFlakesQuads.get(2), portraitRatio * SnowFlakeTypes.BIG.getTextureRatio());
     }
 
     private void setCurrentLayers() {
