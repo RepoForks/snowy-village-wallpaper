@@ -23,6 +23,12 @@ import static com.novoda.snowyvillagewallpaper.ParallaxWallpaper.TAG;
 public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
 
     private static final int MAX_SNOW_FLAKES_COUNT = 40;
+
+    private static final float SKY_COLOR_R = 0.05f;
+    private static final float SKY_COLOR_G = 0.06f;
+    private static final float SKY_COLOR_B = 0.156f;
+    private static final float SKY_COLOR_A = 1f;
+
     private final String[] PORTRAIT_LAYERS_FILES_NAMES = {
             "village_1.png",
             "village_2.png",
@@ -113,7 +119,7 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        gl.glClearColor(0.05f, 0.06f, 0.156f, 1f);
+        gl.glClearColor(SKY_COLOR_R, SKY_COLOR_G, SKY_COLOR_B, SKY_COLOR_A);
         gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         gl.glColor4f(1f, 1f, 1f, 1f);
         for (Quad quad : currentLayers) {
