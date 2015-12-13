@@ -45,11 +45,7 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
             "village_land_5.png"
     };
 
-    private final String[] SNOW_FILES_NAMES = {
-            "snow.png",
-            "snow.png",
-            "snow.png"
-    };
+    private final String SNOW_FILE_NAME = "snow.png";
 
     private float offset = 0.0f;
     private int height;
@@ -94,9 +90,7 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
             for (String bitmapPath : PORTRAIT_LAYERS_FILES_NAMES) {
                 loadLayerTo(bitmapPath, portraitLayers);
             }
-            for (String bitmapPath : SNOW_FILES_NAMES) {
-                loadLayerTo(bitmapPath, snowFlakesQuads);
-            }
+            loadSnowFlakesLayers();
         }
     }
 
@@ -109,6 +103,15 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
         Texture tex = textureLoader.loadTextureFromFile(gl, bitmapPath);
         quad.setTexture(tex);
         layerList.add(0, quad);
+    }
+
+    private void loadSnowFlakesLayers() throws IOException {
+        Texture tex = textureLoader.loadTextureFromFile(gl, SNOW_FILE_NAME);
+        for (int i = 0; i < SnowFlakeTypes.count(); i++) {
+            Quad quad = new Quad();
+            quad.setTexture(tex);
+            snowFlakesQuads.add(0, quad);
+        }
     }
 
     @Override
