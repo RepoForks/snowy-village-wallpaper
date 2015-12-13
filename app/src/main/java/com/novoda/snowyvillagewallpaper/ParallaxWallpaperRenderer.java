@@ -45,17 +45,7 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
             "village_land_5.png"
     };
 
-    private final String[] SNOW_FILES_NAMES = {
-            "snow1.png",
-            "snow2.png",
-            "snow3.png"
-    };
-
-    private final float[] SNOW_SPEEDS = {
-            3f,
-            2f,
-            1f
-    };
+    private final String SNOW_FILE_NAME = "snow.png";
 
     private float offset = 0.0f;
     private int height;
@@ -66,9 +56,9 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
     private final TextureLoader textureLoader;
     private List<Quad> portraitLayers = new ArrayList<>(PORTRAIT_LAYERS_FILES_NAMES.length);
     private List<Quad> landscapeLayers = new ArrayList<>(LANDSCAPE_LAYERS_FILES_NAMES.length);
-    private List<Quad> snowFlakesQuads = new ArrayList<>(SNOW_FILES_NAMES.length);
+    private List<Quad> snowFlakesQuads = new ArrayList<>(SnowFlakeTypes.count());
     private List<Quad> currentLayers = new ArrayList<>();
-    private List<SnowFlake> snowFlakes = new ArrayList<>(SNOW_FILES_NAMES.length);
+    private List<SnowFlake> snowFlakes = new ArrayList<>(MAX_SNOW_FLAKES_COUNT);
 
     private GL10 gl;
 
@@ -100,9 +90,7 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
             for (String bitmapPath : PORTRAIT_LAYERS_FILES_NAMES) {
                 loadLayerTo(bitmapPath, portraitLayers);
             }
-            for (String bitmapPath : SNOW_FILES_NAMES) {
-                loadLayerTo(bitmapPath, snowFlakesQuads);
-            }
+            loadSnowFlakesLayers();
         }
     }
 
@@ -115,6 +103,15 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
         Texture tex = textureLoader.loadTextureFromFile(gl, bitmapPath);
         quad.setTexture(tex);
         layerList.add(0, quad);
+    }
+
+    private void loadSnowFlakesLayers() throws IOException {
+        Texture tex = textureLoader.loadTextureFromFile(gl, SNOW_FILE_NAME);
+        for (int i = 0; i < SnowFlakeTypes.count(); i++) {
+            Quad quad = new Quad();
+            quad.setTexture(tex);
+            snowFlakesQuads.add(0, quad);
+        }
     }
 
     @Override
@@ -168,25 +165,40 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
         if (portraitLayers.isEmpty()) {
             return;
         }
-        float ratio;
+        float portraitRatio = getPortraitRatio();
+        resizeLayers(portraitRatio, portraitLayers);
+
+        float landscapeRatio = getLandscapeRatio();
+        resizeLayers(landscapeRatio, landscapeLayers);
+
+        resizeSnowLayers(portraitRatio);
+    }
+
+    private float getPortraitRatio() {
         int bitmapHeight = portraitLayers.get(0).getTexture().getBitmapHeight();
-        ratio = (float) height / bitmapHeight;
-        for (Quad quad : portraitLayers) {
-            resizeLayer(quad, ratio);
-        }
-        bitmapHeight = landscapeLayers.get(0).getTexture().getBitmapHeight();
-        ratio = (float) height / bitmapHeight;
-        for (Quad quad : landscapeLayers) {
-            resizeLayer(quad, ratio);
-        }
-        for (Quad quad : snowFlakesQuads) {
-            resizeLayer(quad, ratio);
+        return (float) height / bitmapHeight;
+    }
+
+    private float getLandscapeRatio() {
+        int bitmapHeight = landscapeLayers.get(0).getTexture().getBitmapHeight();
+        return (float) height / bitmapHeight;
+    }
+
+    private void resizeLayers(float landscapeRatio, List<Quad> layers) {
+        for (Quad quad : layers) {
+            resizeLayer(quad, landscapeRatio);
         }
     }
 
     private void resizeLayer(Quad quad, float ratio) {
         quad.setHeight(quad.getTexture().getBitmapHeight() * ratio);
         quad.setWidth(quad.getTexture().getBitmapWidth() * ratio);
+    }
+
+    private void resizeSnowLayers(float portraitRatio) {
+        resizeLayer(snowFlakesQuads.get(0), portraitRatio * SnowFlakeTypes.SMALL.getTextureRatio());
+        resizeLayer(snowFlakesQuads.get(1), portraitRatio * SnowFlakeTypes.MEDIUM.getTextureRatio());
+        resizeLayer(snowFlakesQuads.get(2), portraitRatio * SnowFlakeTypes.BIG.getTextureRatio());
     }
 
     private void setCurrentLayers() {
@@ -204,8 +216,8 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
         for (int i = 0; i < MAX_SNOW_FLAKES_COUNT; i++) {
             float startX = rng.nextFloat() * width;
             float startY = 0 - rng.nextFloat() * height;
-            int snowFlakeShapeIndex = rng.nextInt(SNOW_FILES_NAMES.length);
-            float speed = SNOW_SPEEDS[snowFlakeShapeIndex] + rng.nextFloat();
+            int snowFlakeShapeIndex = rng.nextInt(SnowFlakeTypes.count());
+            float speed = SnowFlakeTypes.values()[snowFlakeShapeIndex].getBaseSpeed() + rng.nextFloat();
             snowFlakes.add(new SnowFlake(startX, startY, snowFlakeShapeIndex, speed));
         }
     }
