@@ -5,11 +5,11 @@ enum SnowFlakeTypes {
     MEDIUM(2f, 0.26f),
     BIG(3f, 0.40f);
 
-    private final float speed;
+    private final float baseSpeed;
     private final float textureRatio;
 
-    SnowFlakeTypes(float speed, float textureRatio) {
-        this.speed = speed;
+    SnowFlakeTypes(float baseSpeed, float textureRatio) {
+        this.baseSpeed = baseSpeed;
         this.textureRatio = textureRatio;
     }
 
@@ -17,8 +17,8 @@ enum SnowFlakeTypes {
         return values().length;
     }
 
-    public float getSpeed() {
-        return speed;
+    public float getBaseSpeed() {
+        return baseSpeed;
     }
 
     public float getTextureRatio() {

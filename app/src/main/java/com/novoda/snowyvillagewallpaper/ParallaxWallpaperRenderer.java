@@ -202,7 +202,7 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
             float startX = rng.nextFloat() * width;
             float startY = 0 - rng.nextFloat() * height;
             int snowFlakeShapeIndex = rng.nextInt(SnowFlakeTypes.count());
-            float speed = SnowFlakeTypes.values()[snowFlakeShapeIndex].getSpeed() + rng.nextFloat();
+            float speed = SnowFlakeTypes.values()[snowFlakeShapeIndex].getBaseSpeed() + rng.nextFloat();
             snowFlakes.add(new SnowFlake(startX, startY, snowFlakeShapeIndex, speed));
         }
     }
