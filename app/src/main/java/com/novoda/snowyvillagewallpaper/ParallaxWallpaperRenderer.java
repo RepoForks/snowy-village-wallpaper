@@ -28,6 +28,9 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
     private static final float SKY_COLOR_G = 0.06f;
     private static final float SKY_COLOR_B = 0.156f;
     private static final float SKY_COLOR_A = 1f;
+    private static final float BIG_SNOW_FLAKE_RATIO = 0.45f;
+    private static final float MEDIUM_SNOW_FLAKE_RATIO = 0.28f;
+    private static final float SMALL_SNOW_FLAKE_RATIO = 0.10f;
 
     private final String[] PORTRAIT_LAYERS_FILES_NAMES = {
             "village_1.png",
@@ -46,9 +49,9 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
     };
 
     private final String[] SNOW_FILES_NAMES = {
-            "snow1.png",
-            "snow2.png",
-            "snow3.png"
+            "snow.png",
+            "snow.png",
+            "snow.png"
     };
 
     private final float[] SNOW_SPEEDS = {
@@ -168,20 +171,20 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
         if (portraitLayers.isEmpty()) {
             return;
         }
-        float ratio;
         int bitmapHeight = portraitLayers.get(0).getTexture().getBitmapHeight();
-        ratio = (float) height / bitmapHeight;
+        float portraitRatio = (float) height / bitmapHeight;
         for (Quad quad : portraitLayers) {
-            resizeLayer(quad, ratio);
+            resizeLayer(quad, portraitRatio);
         }
         bitmapHeight = landscapeLayers.get(0).getTexture().getBitmapHeight();
-        ratio = (float) height / bitmapHeight;
+        float landscapeRatio = (float) height / bitmapHeight;
         for (Quad quad : landscapeLayers) {
-            resizeLayer(quad, ratio);
+            resizeLayer(quad, landscapeRatio);
         }
-        for (Quad quad : snowFlakesQuads) {
-            resizeLayer(quad, ratio);
-        }
+
+        resizeLayer(snowFlakesQuads.get(0), portraitRatio * BIG_SNOW_FLAKE_RATIO);
+        resizeLayer(snowFlakesQuads.get(1), portraitRatio * MEDIUM_SNOW_FLAKE_RATIO);
+        resizeLayer(snowFlakesQuads.get(2), portraitRatio * SMALL_SNOW_FLAKE_RATIO);
     }
 
     private void resizeLayer(Quad quad, float ratio) {
