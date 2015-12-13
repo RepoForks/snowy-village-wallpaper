@@ -1,9 +1,9 @@
 package com.novoda.snowyvillagewallpaper;
 
 enum SnowFlakeTypes {
-    SMALL(1f, 0.10f),
-    MEDIUM(2f, 0.28f),
-    BIG(3f, 0.42f);
+    SMALL(1f, 0.9f),
+    MEDIUM(2f, 0.26f),
+    BIG(3f, 0.40f);
 
     private final float speed;
     private final float textureRatio;
