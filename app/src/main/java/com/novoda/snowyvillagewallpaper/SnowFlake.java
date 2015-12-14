@@ -2,28 +2,20 @@ package com.novoda.snowyvillagewallpaper;
 
 class SnowFlake {
 
-    private final int flakeId;
+    private final int flakeImageId;
     private final float speed;
     private final float x;
     private float y;
 
-    public SnowFlake(float x, float y, int flakeId, float speed) {
+    public SnowFlake(float x, float y, int flakeImageId, float speed) {
         this.x = x;
         this.y = y;
-        this.flakeId = flakeId;
+        this.flakeImageId = flakeImageId;
         this.speed = speed;
     }
 
-    public void setY(float y) {
-        this.y = y;
-    }
-
-    public int getFlakeId() {
-        return flakeId;
-    }
-
-    public float getSpeed() {
-        return speed;
+    public int getFlakeImageId() {
+        return flakeImageId;
     }
 
     public float getX() {
@@ -32,5 +24,12 @@ class SnowFlake {
 
     public float getY() {
         return y;
+    }
+
+    public void update(final int surfaceHeight, final int maxSnowflakeHeight) {
+        y += speed;
+        if (y > surfaceHeight) {
+            y = -maxSnowflakeHeight;
+        }
     }
 }
