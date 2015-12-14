@@ -39,7 +39,7 @@ public class ParallaxWallpaper extends GLWallpaperService {
 
         ParallaxEngine() {
             super();
-            renderer = new ParallaxWallpaperRenderer(ParallaxWallpaper.this.getAssets());
+            renderer = new ParallaxWallpaperRenderer(getAssets());
             setRenderer(renderer);
 
             // TODO: use RENDERMODE_WHEN_DIRTY if not showing snow
@@ -52,7 +52,7 @@ public class ParallaxWallpaper extends GLWallpaperService {
         public void initLayers() {
             try {
                 renderer.reloadLayers();
-                renderer.resizeLayers();
+                //renderer.resizeLayers(); STOPSHIP
             } catch (IOException e) {
                 Log.e(TAG, "Error loading textures", e);
             }

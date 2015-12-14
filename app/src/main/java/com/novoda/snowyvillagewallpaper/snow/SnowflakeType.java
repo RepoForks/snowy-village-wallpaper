@@ -1,6 +1,6 @@
-package com.novoda.snowyvillagewallpaper;
+package com.novoda.snowyvillagewallpaper.snow;
 
-enum SnowFlakeTypes {
+public enum SnowflakeType {
     SMALL(1f, 0.09f),
     MEDIUM(2f, 0.26f),
     BIG(3f, 0.40f);
@@ -8,7 +8,7 @@ enum SnowFlakeTypes {
     private final float baseSpeed;
     private final float textureRatio;
 
-    SnowFlakeTypes(float baseSpeed, float textureRatio) {
+    SnowflakeType(float baseSpeed, float textureRatio) {
         this.baseSpeed = baseSpeed;
         this.textureRatio = textureRatio;
     }
@@ -24,4 +24,5 @@ enum SnowFlakeTypes {
     public float getTextureRatio() {
         return textureRatio;
     }
+
 }
