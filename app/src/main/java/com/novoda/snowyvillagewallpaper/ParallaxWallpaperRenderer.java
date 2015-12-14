@@ -8,6 +8,8 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -29,7 +31,7 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
     private static final float SKY_COLOR_B = 0.156f;
     private static final float SKY_COLOR_A = 1f;
 
-    private final String[] PORTRAIT_LAYERS_FILES_NAMES = {
+    private static final String[] PORTRAIT_LAYERS_FILES_NAMES = {
             "village_1.png",
             "village_2.png",
             "village_3.png",
@@ -37,7 +39,7 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
             "village_5.png"
     };
 
-    private final String[] LANDSCAPE_LAYERS_FILES_NAMES = {
+    private static final String[] LANDSCAPE_LAYERS_FILES_NAMES = {
             "village_land_1.png",
             "village_land_2.png",
             "village_land_3.png",
@@ -45,7 +47,7 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
             "village_land_5.png"
     };
 
-    private final String SNOW_FILE_NAME = "snow.png";
+    private static final String SNOW_FILE_NAME = "snow.png";
 
     private float offset = 0.0f;
     private int surfaceHeight;
@@ -53,6 +55,7 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
     private int maxSnowflakeHeight;
 
     private final Capabilities capabilities = new Capabilities();
+    private final Comparator<SnowFlake> snowFlakeComparator = new SnowFlakeSizeComparator();
     private final TextureLoader textureLoader;
     private List<Quad> portraitLayers = new ArrayList<>(PORTRAIT_LAYERS_FILES_NAMES.length);
     private List<Quad> landscapeLayers = new ArrayList<>(LANDSCAPE_LAYERS_FILES_NAMES.length);
@@ -209,9 +212,12 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
             float startX = rng.nextFloat() * surfaceWidth;
             float startY = 0 - rng.nextFloat() * surfaceHeight;
             int snowFlakeShapeIndex = rng.nextInt(SnowFlakeTypes.count());
-            float speed = SnowFlakeTypes.values()[snowFlakeShapeIndex].getBaseSpeed() + rng.nextFloat();
-            snowFlakes.add(new SnowFlake(startX, startY, snowFlakeShapeIndex, speed));
+            SnowFlakeTypes flakeType = SnowFlakeTypes.values()[snowFlakeShapeIndex];
+            float speed = flakeType.getBaseSpeed() + rng.nextFloat();
+            snowFlakes.add(new SnowFlake(flakeType, startX, startY, snowFlakeShapeIndex, speed));
         }
+
+        Collections.sort(snowFlakes, snowFlakeComparator);
     }
 
     private int calculateMaxSnowFlakeHeight() {

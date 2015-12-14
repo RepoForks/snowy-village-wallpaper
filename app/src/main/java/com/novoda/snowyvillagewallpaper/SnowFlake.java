@@ -4,10 +4,12 @@ class SnowFlake {
 
     private final int flakeImageId;
     private final float speed;
+    private final SnowFlakeTypes flakeType;
     private final float x;
     private float y;
 
-    public SnowFlake(float x, float y, int flakeImageId, float speed) {
+    public SnowFlake(SnowFlakeTypes flakeType, float x, float y, int flakeImageId, float speed) {
+        this.flakeType = flakeType;
         this.x = x;
         this.y = y;
         this.flakeImageId = flakeImageId;
@@ -31,5 +33,9 @@ class SnowFlake {
         if (y > surfaceHeight) {
             y = -maxSnowflakeHeight;
         }
+    }
+
+    public SnowFlakeTypes getFlakeType() {
+        return flakeType;
     }
 }
