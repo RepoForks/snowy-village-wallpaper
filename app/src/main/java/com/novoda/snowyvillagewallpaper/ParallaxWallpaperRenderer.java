@@ -8,6 +8,8 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -53,6 +55,7 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
     private int maxSnowflakeHeight;
 
     private final Capabilities capabilities = new Capabilities();
+    private final Comparator<SnowFlake> snowFlakeComparator = new SnowFlakeSizeComparator();
     private final TextureLoader textureLoader;
     private List<Quad> portraitLayers = new ArrayList<>(PORTRAIT_LAYERS_FILES_NAMES.length);
     private List<Quad> landscapeLayers = new ArrayList<>(LANDSCAPE_LAYERS_FILES_NAMES.length);
@@ -209,9 +212,12 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
             float startX = rng.nextFloat() * surfaceWidth;
             float startY = 0 - rng.nextFloat() * surfaceHeight;
             int snowFlakeShapeIndex = rng.nextInt(SnowFlakeTypes.count());
-            float speed = SnowFlakeTypes.values()[snowFlakeShapeIndex].getBaseSpeed() + rng.nextFloat();
-            snowFlakes.add(new SnowFlake(startX, startY, snowFlakeShapeIndex, speed));
+            SnowFlakeTypes flakeType = SnowFlakeTypes.values()[snowFlakeShapeIndex];
+            float speed = flakeType.getBaseSpeed() + rng.nextFloat();
+            snowFlakes.add(new SnowFlake(flakeType, startX, startY, snowFlakeShapeIndex, speed));
         }
+
+        Collections.sort(snowFlakes, snowFlakeComparator);
     }
 
     private int calculateMaxSnowFlakeHeight() {
