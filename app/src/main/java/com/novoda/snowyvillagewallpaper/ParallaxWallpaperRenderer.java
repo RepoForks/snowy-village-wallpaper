@@ -31,7 +31,7 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
     private static final float SKY_COLOR_B = 0.156f;
     private static final float SKY_COLOR_A = 1f;
 
-    private final String[] PORTRAIT_LAYERS_FILES_NAMES = {
+    private static final String[] PORTRAIT_LAYERS_FILES_NAMES = {
             "village_1.png",
             "village_2.png",
             "village_3.png",
@@ -39,7 +39,7 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
             "village_5.png"
     };
 
-    private final String[] LANDSCAPE_LAYERS_FILES_NAMES = {
+    private static final String[] LANDSCAPE_LAYERS_FILES_NAMES = {
             "village_land_1.png",
             "village_land_2.png",
             "village_land_3.png",
@@ -47,7 +47,7 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
             "village_land_5.png"
     };
 
-    private final String SNOW_FILE_NAME = "snow.png";
+    private static final String SNOW_FILE_NAME = "snow.png";
 
     private float offset = 0.0f;
     private int surfaceHeight;
