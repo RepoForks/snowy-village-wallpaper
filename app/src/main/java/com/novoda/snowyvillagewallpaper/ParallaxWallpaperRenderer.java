@@ -12,8 +12,6 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import uk.co.halfninja.wallpaper.parallax.gl.Capabilities;
@@ -57,7 +55,6 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
     private final BlizzardMaster blizzardMaster;
 
     private final Capabilities capabilities = new Capabilities();
-    private final Comparator<SnowFlake> snowFlakeComparator = new SnowFlakeSizeComparator();
     private final TextureLoader textureLoader;
     private List<Quad> portraitLayers = new ArrayList<>(PORTRAIT_LAYERS_FILES_NAMES.length);
     private List<Quad> landscapeLayers = new ArrayList<>(LANDSCAPE_LAYERS_FILES_NAMES.length);
@@ -129,7 +126,7 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl) {
         blizzardMaster.advanceFrame();
         drawSkyOn(gl);
-        drawBackdropOn(gl);
+       // drawBackdropOn(gl);
         drawSnowflakesOn(gl);
     }
 

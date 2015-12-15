@@ -1,9 +1,10 @@
 package com.novoda.snowyvillagewallpaper.snow;
 
-
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -13,12 +14,13 @@ public class BlizzardMaster {
     private static final double SPEED_X_OFFSET = .5d;
     private static final float MAX_SPEED_X = 1.5f;
 
+    private final Comparator<Snowflake> snowflakeComparator = new SnowflakeSizeComparator();
+    private final List<Snowflake> snowflakes = new ArrayList<>(MAX_SNOWFLAKES_COUNT);
+    private final Random rng = new Random();
+
     private int viewportWidth;
     private int viewportHeight;
     private float portraitRatio;
-
-    private List<Snowflake> snowflakes = new ArrayList<>(MAX_SNOWFLAKES_COUNT);
-    private Random rng = new Random();
     private int snowBitmapSize;
 
     public void onViewportSizeChanged(int viewportWidth, int viewportHeight, float portraitRatio) {
@@ -49,6 +51,8 @@ public class BlizzardMaster {
 
             snowflakes.add(snowflake);
         }
+
+        Collections.sort(snowflakes, snowflakeComparator);
     }
 
     private void setRandomInitialPositionFor(Snowflake snowflake) {
