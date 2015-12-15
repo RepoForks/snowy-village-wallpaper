@@ -3,14 +3,14 @@ package com.novoda.snowyvillagewallpaper.snow;
 public class Snowflake {
 
     private final SnowflakeType snowflakeType;
-    private final int snowflakeSize;
+    private final float snowflakeSize;
     private final float speedY;
     private final float speedX;
 
     private float x;
     private float y;
 
-    Snowflake(SnowflakeType snowflakeType, int snowflakeSize, float speedX, float speedY) {
+    Snowflake(SnowflakeType snowflakeType, float snowflakeSize, float speedX, float speedY) {
         this.snowflakeSize = snowflakeSize;
         this.snowflakeType = snowflakeType;
         this.speedX = speedX;

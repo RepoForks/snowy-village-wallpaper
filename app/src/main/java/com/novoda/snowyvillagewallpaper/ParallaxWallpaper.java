@@ -52,7 +52,7 @@ public class ParallaxWallpaper extends GLWallpaperService {
         public void initLayers() {
             try {
                 renderer.reloadLayers();
-                //renderer.resizeLayers(); STOPSHIP
+                renderer.resizeLayers();
             } catch (IOException e) {
                 Log.e(TAG, "Error loading textures", e);
             }

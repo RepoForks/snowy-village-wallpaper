@@ -61,7 +61,7 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
     private final TextureLoader textureLoader;
     private List<Quad> portraitLayers = new ArrayList<>(PORTRAIT_LAYERS_FILES_NAMES.length);
     private List<Quad> landscapeLayers = new ArrayList<>(LANDSCAPE_LAYERS_FILES_NAMES.length);
-    private List<Quad> snowFlakesQuads = new ArrayList<>(SnowflakeType.count());
+    private List<Quad> snowflakesQuads = new ArrayList<>(SnowflakeType.count());
     private List<Quad> currentLayers = new ArrayList<>();
 
     private GL10 gl;
@@ -87,14 +87,14 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
 
     private void loadSnowTexture(GL10 gl) throws IOException {
         snowTexture = textureLoader.loadTextureFromFile(gl, SNOW_FILE_NAME);
-        blizzardMaster.setSnowTextureSize(snowTexture.getBitmapWidth());
+        blizzardMaster.setSnowBitmapSize(snowTexture.getBitmapWidth());
     }
 
     public void reloadLayers() throws IOException {
         if (gl != null && layersNotAlreadyLoaded()) {
             portraitLayers.clear();
             landscapeLayers.clear();
-            snowFlakesQuads.clear();
+            snowflakesQuads.clear();
             textureLoader.clear(gl);
             for (String bitmapPath : LANDSCAPE_LAYERS_FILES_NAMES) {
                 loadLayerTo(bitmapPath, landscapeLayers);
@@ -107,7 +107,7 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
     }
 
     private boolean layersNotAlreadyLoaded() {
-        return snowFlakesQuads.isEmpty() && portraitLayers.isEmpty() && landscapeLayers.isEmpty();
+        return snowflakesQuads.isEmpty() && portraitLayers.isEmpty() && landscapeLayers.isEmpty();
     }
 
     private void loadLayerTo(String bitmapPath, List<Quad> layerList) throws IOException {
@@ -121,7 +121,7 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
         for (SnowflakeType snowflakeType : SnowflakeType.values()) {
             Quad quad = new Quad();
             quad.setTexture(snowTexture);
-            snowFlakesQuads.add(snowflakeType.ordinal(), quad);
+            snowflakesQuads.add(snowflakeType.ordinal(), quad);
         }
     }
 
@@ -136,6 +136,7 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
     private void drawSkyOn(GL10 gl) {
         gl.glClearColor(SKY_COLOR_R, SKY_COLOR_G, SKY_COLOR_B, SKY_COLOR_A);
         gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        gl.glColor4f(1f, 1f, 1f, 1f);
     }
 
     private void drawBackdropOn(GL10 gl) {
@@ -147,7 +148,7 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
 
     private void drawSnowflakesOn(GL10 gl) {
         for (Snowflake flake : blizzardMaster.getSnowflakes()) {
-            Quad quad = snowFlakesQuads.get(flake.getSnowflakeType().ordinal());
+            Quad quad = snowflakesQuads.get(flake.getSnowflakeType().ordinal());
             quad.setY(flake.getY());
             quad.setX(flake.getX());
             quad.draw(gl);
@@ -168,17 +169,16 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
         gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         float portraitRatio = getPortraitRatio();
-        resizeLayers(portraitRatio);
-        setCurrentLayers();
-
         blizzardMaster.onViewportSizeChanged(w, h, portraitRatio);
+        resizeLayers();
+        setCurrentLayers();
     }
 
-    public void resizeLayers(float portraitRatio) {
+    public void resizeLayers() {
         if (portraitLayers.isEmpty()) {
             return;
         }
-        resizeLayers(portraitRatio, portraitLayers);
+        resizeLayers(getPortraitRatio(), portraitLayers);
 
         float landscapeRatio = getLandscapeRatio();
         resizeLayers(landscapeRatio, landscapeLayers);
@@ -202,18 +202,19 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
         }
     }
 
-    private void resizeSnowLayers() {
-        for (SnowflakeType snowflakeType : SnowflakeType.values()) {
-            resizeLayer(snowFlakesQuads.get(
-                    snowflakeType.ordinal()),
-                    blizzardMaster.getSnowflakeSizeFor(snowflakeType)
-            );
-        }
-    }
-
     private void resizeLayer(Quad quad, float ratio) {
         quad.setHeight(quad.getTexture().getBitmapHeight() * ratio);
         quad.setWidth(quad.getTexture().getBitmapWidth() * ratio);
+    }
+
+    private void resizeSnowLayers() {
+        for (SnowflakeType snowflakeType : SnowflakeType.values()) {
+            Quad quad = snowflakesQuads.get(snowflakeType.ordinal());
+            float snowflakeSize = blizzardMaster.getSnowflakeSizeFor(snowflakeType);
+            Log.w("BlizzardSlave", String.format("Setting size of %1$f for type %2$s", snowflakeSize, snowflakeType.name()));
+            quad.setWidth(snowflakeSize);
+            quad.setHeight(snowflakeSize);
+        }
     }
 
     private void setCurrentLayers() {

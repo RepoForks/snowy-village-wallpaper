@@ -1,6 +1,8 @@
 package com.novoda.snowyvillagewallpaper.snow;
 
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -17,9 +19,11 @@ public class BlizzardMaster {
 
     private List<Snowflake> snowflakes = new ArrayList<>(MAX_SNOWFLAKES_COUNT);
     private Random rng = new Random();
-    private int snowTextureSize;
+    private int snowBitmapSize;
 
     public void onViewportSizeChanged(int viewportWidth, int viewportHeight, float portraitRatio) {
+        Log.i("BlizzardMaster", String.format("Viewport changed! W=%1$d, H=%2$d, R=%3$f", viewportWidth, viewportHeight, portraitRatio));
+
         this.viewportWidth = viewportWidth;
         this.viewportHeight = viewportHeight;
         this.portraitRatio = portraitRatio;
@@ -38,7 +42,7 @@ public class BlizzardMaster {
             float speedY = getRandomSnowflakeSpeedYUsing(rng, snowflakeType);
             float speedX = getRandomSpeedXUsing(rng);
 
-            int snowflakeSize = getSnowflakeSizeFor(snowflakeType);
+            float snowflakeSize = getSnowflakeSizeFor(snowflakeType);
             Snowflake snowflake = new Snowflake(snowflakeType, snowflakeSize, speedX, speedY);
 
             setRandomInitialPositionFor(snowflake);
@@ -49,7 +53,8 @@ public class BlizzardMaster {
 
     private void setRandomInitialPositionFor(Snowflake snowflake) {
         float initialX = rng.nextFloat() * viewportWidth;
-        float initialY = 0 - rng.nextFloat() * viewportHeight;
+        float initialY = -getSnowflakeSizeFor(snowflake.getSnowflakeType());
+        Log.i("BlizzardMaster", String.format("Setting initial position for flake %1$d: (%2$f, %3$f)", snowflake.hashCode(), initialX, initialY));
         snowflake.resetPositionTo(initialX, initialY);
     }
 
@@ -75,6 +80,7 @@ public class BlizzardMaster {
             snowflake.updatePosition();
 
             if (hasLeftViewport(snowflake)) {
+                Log.i("BlizzardMaster", "Snowflake " + snowflake.hashCode() + " has left the viewport");
                 setRandomInitialPositionFor(snowflake);
             }
         }
@@ -84,11 +90,12 @@ public class BlizzardMaster {
         return !snowflake.isInViewport(viewportWidth, viewportHeight);
     }
 
-    public int getSnowflakeSizeFor(SnowflakeType snowflakeType) {
-        return (int) (portraitRatio * snowflakeType.getTextureRatio() * snowTextureSize);
+    public float getSnowflakeSizeFor(SnowflakeType snowflakeType) {
+        return portraitRatio * snowflakeType.getTextureRatio() * snowBitmapSize;
     }
 
-    public void setSnowTextureSize(int snowTextureSize) {
-        this.snowTextureSize = snowTextureSize;
+    public void setSnowBitmapSize(int snowBitmapSize) {
+        this.snowBitmapSize = snowBitmapSize;
     }
+
 }
