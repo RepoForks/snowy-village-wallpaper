@@ -48,6 +48,8 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
     };
 
     private static final String SNOW_FILE_NAME = "snow.png";
+    private static final String SANTA_FILE_NAME = "santa.png";
+    private static final float SANTA_LAYER_RESIZE_RATIO = 0.3f;
 
     private float offset = 0.0f;
     private int pixelOffset = 0;
@@ -63,6 +65,9 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
     private List<Quad> snowFlakesQuads = new ArrayList<>(SnowFlakeTypes.count());
     private List<Quad> currentLayers = new ArrayList<>();
     private List<SnowFlake> snowFlakes = new ArrayList<>(MAX_SNOW_FLAKES_COUNT);
+
+    private Quad santaLayer;
+    private SantaTracker santaTracker;
 
     private GL10 gl;
 
@@ -94,6 +99,7 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
             for (String bitmapPath : PORTRAIT_LAYERS_FILES_NAMES) {
                 loadLayerTo(bitmapPath, portraitLayers);
             }
+            loadSantaLayer();
             loadSnowFlakesLayers();
         }
     }
@@ -107,6 +113,12 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
         Texture tex = textureLoader.loadTextureFromFile(gl, bitmapPath);
         quad.setTexture(tex);
         layerList.add(0, quad);
+    }
+
+    private void loadSantaLayer() throws IOException {
+        santaLayer = new Quad();
+        Texture tex = textureLoader.loadTextureFromFile(gl, SANTA_FILE_NAME);
+        santaLayer.setTexture(tex);
     }
 
     private void loadSnowFlakesLayers() throws IOException {
@@ -123,10 +135,17 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
         gl.glClearColor(SKY_COLOR_R, SKY_COLOR_G, SKY_COLOR_B, SKY_COLOR_A);
         gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         gl.glColor4f(1f, 1f, 1f, 1f);
+
+        // TODO: draw Santa in front of the Moon but behind the village
         for (Quad quad : currentLayers) {
             quad.setX(offset * (surfaceWidth - quad.getWidth()));
             quad.draw(gl);
         }
+
+        santaTracker.updatePosition();
+        santaLayer.setX(santaTracker.getX() + pixelOffset);
+        santaLayer.setY(santaTracker.getY());
+        santaLayer.draw(gl);
 
         for (SnowFlake flake : snowFlakes) {
             Quad quad = snowFlakesQuads.get(flake.getFlakeImageId());
@@ -153,6 +172,12 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
         resizeLayers();
         setCurrentLayers();
 
+        santaTracker = new SantaTracker(
+                currentLayers.get(0).getWidth(),
+                currentLayers.get(0).getHeight(),
+                santaLayer.getWidth(),
+                santaLayer.getHeight());
+
         createSnowFlakes();
         maxSnowflakeHeight = calculateMaxSnowFlakeHeight();
     }
@@ -168,6 +193,8 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
         resizeLayers(landscapeRatio, landscapeLayers);
 
         resizeSnowLayers(portraitRatio);
+
+        resizeLayer(santaLayer, portraitRatio * SANTA_LAYER_RESIZE_RATIO);
     }
 
     private float getPortraitRatio() {
