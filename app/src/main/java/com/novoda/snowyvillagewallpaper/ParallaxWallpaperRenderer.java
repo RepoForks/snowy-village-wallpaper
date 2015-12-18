@@ -148,17 +148,19 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
             quad.draw(gl);
         }
 
-        santaTracker.updatePosition();
-        Quad currentSantaDirectionLayer;
+        if (santaTracker.isSantaInTown()) {
+            santaTracker.updatePosition();
+            Quad currentSantaDirectionLayer;
 
-        if (santaTracker.movingToRight()) {
-            currentSantaDirectionLayer = santaToRightLayer;
-        } else {
-            currentSantaDirectionLayer = santaToLeftLayer;
+            if (santaTracker.movingToRight()) {
+                currentSantaDirectionLayer = santaToRightLayer;
+            } else {
+                currentSantaDirectionLayer = santaToLeftLayer;
+            }
+            currentSantaDirectionLayer.setX(santaTracker.getX() + pixelOffset);
+            currentSantaDirectionLayer.setY(santaTracker.getY());
+            currentSantaDirectionLayer.draw(gl);
         }
-        currentSantaDirectionLayer.setX(santaTracker.getX() + pixelOffset);
-        currentSantaDirectionLayer.setY(santaTracker.getY());
-        currentSantaDirectionLayer.draw(gl);
 
         for (SnowFlake flake : snowFlakes) {
             Quad quad = snowFlakesQuads.get(flake.getFlakeImageId());
