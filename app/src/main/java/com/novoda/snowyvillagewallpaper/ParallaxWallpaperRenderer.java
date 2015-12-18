@@ -50,6 +50,7 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
     private static final String SNOW_FILE_NAME = "snow.png";
 
     private float offset = 0.0f;
+    private int pixelOffset = 0;
     private int surfaceHeight;
     private int surfaceWidth;
     private int maxSnowflakeHeight;
@@ -228,8 +229,9 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
         return max;
     }
 
-    public void setOffset(float xOffset) {
+    public void setOffset(float xOffset, int xPixels) {
         offset = xOffset;
+        pixelOffset = xPixels;
     }
 
 }
