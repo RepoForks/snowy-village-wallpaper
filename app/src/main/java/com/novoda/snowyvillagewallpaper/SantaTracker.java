@@ -2,7 +2,7 @@ package com.novoda.snowyvillagewallpaper;
 
 class SantaTracker {
 
-    private static final float SPEED = 4.0f;
+    private static final float SPEED = 6.0f;
 
     private final float skyWidth;
     private final float skyHeight;
@@ -11,6 +11,7 @@ class SantaTracker {
 
     private float x;
     private float y;
+    private Direction direction;
 
     public SantaTracker(float skyWidth, float skyHeight, float santaWidth, float santaHeight) {
         this.skyWidth = skyWidth;
@@ -18,7 +19,17 @@ class SantaTracker {
         this.santaWidth = santaWidth;
         this.santaHeight = santaHeight;
         x = 0;
+        direction = Direction.TO_RIGHT;
+        resetPosition();
+    }
+
+    private void resetPosition() {
         y = initRandomY();
+        if (direction == Direction.TO_RIGHT) {
+            x = -santaWidth;
+        } else {
+            x = skyWidth;
+        }
     }
 
     private float initRandomY() {
@@ -26,10 +37,22 @@ class SantaTracker {
     }
 
     public void updatePosition() {
-        x += SPEED;
-        if (x > skyWidth) {
-            x = -santaWidth;
-            y = initRandomY();
+        if (direction == Direction.TO_RIGHT) {
+            x += SPEED;
+        } else {
+            x -= SPEED;
+        }
+        if (x > skyWidth || x < -santaWidth) {
+            flipDirection();
+            resetPosition();
+        }
+    }
+
+    private void flipDirection() {
+        if (direction == Direction.TO_LEFT) {
+            direction = Direction.TO_RIGHT;
+        } else {
+            direction = Direction.TO_LEFT;
         }
     }
 
@@ -39,5 +62,14 @@ class SantaTracker {
 
     public float getY() {
         return y;
+    }
+
+    public boolean movingToRight() {
+        return direction == Direction.TO_RIGHT;
+    }
+
+    private enum Direction {
+        TO_LEFT,
+        TO_RIGHT
     }
 }
