@@ -1,6 +1,6 @@
-package com.novoda.snowyvillagewallpaper;
+package com.novoda.snowyvillagewallpaper.santa;
 
-public class Clock {
+class Clock {
 
     public long getCurrentTime() {
         return System.currentTimeMillis();

@@ -1,4 +1,4 @@
-package com.novoda.snowyvillagewallpaper;
+package com.novoda.snowyvillagewallpaper.santa;
 
 import java.util.Random;
 

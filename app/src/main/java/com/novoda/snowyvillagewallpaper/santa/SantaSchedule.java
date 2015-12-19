@@ -1,15 +1,21 @@
-package com.novoda.snowyvillagewallpaper;
+package com.novoda.snowyvillagewallpaper.santa;
 
 import java.util.Calendar;
 
-class SantaSchedule {
+public class SantaSchedule {
 
     private final Clock clock;
     private final RoundDelay roundDelay;
 
     private long nextTimeInTown;
 
-    public SantaSchedule(Clock clock, RoundDelay roundDelay) {
+    public static SantaSchedule newInstance() {
+        Clock clock = new Clock();
+        RoundDelay roundDelay = new RoundDelay();
+        return new SantaSchedule(clock, roundDelay);
+    }
+
+    SantaSchedule(Clock clock, RoundDelay roundDelay) {
         this.clock = clock;
         this.roundDelay = roundDelay;
     }

@@ -4,6 +4,9 @@ import android.content.res.AssetManager;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 
+import com.novoda.snowyvillagewallpaper.santa.SantaSchedule;
+import com.novoda.snowyvillagewallpaper.santa.SantaTracker;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import java.io.IOException;
@@ -19,8 +22,8 @@ import uk.co.halfninja.wallpaper.parallax.gl.Texture;
 import uk.co.halfninja.wallpaper.parallax.gl.TextureLoader;
 import uk.co.halfninja.wallpaper.parallax.gl.Utils;
 
-import static javax.microedition.khronos.opengles.GL10.*;
 import static com.novoda.snowyvillagewallpaper.ParallaxWallpaper.TAG;
+import static javax.microedition.khronos.opengles.GL10.*;
 
 public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
 
@@ -187,9 +190,14 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
         resizeLayers();
         setCurrentLayers();
 
-        Clock clock = new Clock();
-        RoundDelay roundDelay = new RoundDelay();
-        SantaSchedule santaSchedule = new SantaSchedule(clock, roundDelay);
+        initSantaTracker();
+
+        createSnowFlakes();
+        maxSnowflakeHeight = calculateMaxSnowFlakeHeight();
+    }
+
+    private void initSantaTracker() {
+        SantaSchedule santaSchedule = SantaSchedule.newInstance();
         santaTracker = new SantaTracker(
                 currentLayers.get(0).getWidth(),
                 currentLayers.get(0).getHeight(),
@@ -197,9 +205,6 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
                 santaToLeftLayer.getHeight(),
                 santaSchedule
         );
-
-        createSnowFlakes();
-        maxSnowflakeHeight = calculateMaxSnowFlakeHeight();
     }
 
     public void resizeLayers() {

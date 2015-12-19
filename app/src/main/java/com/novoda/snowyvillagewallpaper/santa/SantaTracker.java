@@ -1,6 +1,6 @@
-package com.novoda.snowyvillagewallpaper;
+package com.novoda.snowyvillagewallpaper.santa;
 
-class SantaTracker {
+public class SantaTracker {
 
     private static final float SPEED = 4.0f;
 
