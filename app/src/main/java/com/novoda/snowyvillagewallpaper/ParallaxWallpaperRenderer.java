@@ -187,11 +187,15 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
         resizeLayers();
         setCurrentLayers();
 
+        Clock clock = new Clock();
+        RoundDelay roundDelay = new RoundDelay();
+        SantaSchedule santaSchedule = new SantaSchedule(clock, roundDelay);
         santaTracker = new SantaTracker(
                 currentLayers.get(0).getWidth(),
                 currentLayers.get(0).getHeight(),
                 santaToLeftLayer.getWidth(),
-                santaToLeftLayer.getHeight(), new Clock()
+                santaToLeftLayer.getHeight(),
+                santaSchedule
         );
 
         createSnowFlakes();

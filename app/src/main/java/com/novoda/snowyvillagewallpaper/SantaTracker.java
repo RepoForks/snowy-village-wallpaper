@@ -2,9 +2,7 @@ package com.novoda.snowyvillagewallpaper;
 
 class SantaTracker {
 
-    private static final float SPEED = 6.0f;
-    private static final long MILLISECONDS_IN_SECONDS = 1000;
-    private static final long MIN_INTERVAL_BETWEEN_VISITS = 2 * MILLISECONDS_IN_SECONDS;
+    private static final float SPEED = 4.0f;
 
     private final float skyWidth;
     private final float skyHeight;
@@ -15,19 +13,18 @@ class SantaTracker {
     private float y;
     private Direction direction;
 
-    private final Clock clock;
-    private long nextTimeInTown;
+    private final SantaSchedule santaSchedule;
 
-    public SantaTracker(float skyWidth, float skyHeight, float santaWidth, float santaHeight, Clock clock) {
+    public SantaTracker(float skyWidth, float skyHeight, float santaWidth, float santaHeight, SantaSchedule santaSchedule) {
         this.skyWidth = skyWidth;
         this.skyHeight = skyHeight;
         this.santaWidth = santaWidth;
         this.santaHeight = santaHeight;
-        this.clock = clock;
+        this.santaSchedule = santaSchedule;
 
         direction = Direction.TO_RIGHT;
         resetPosition();
-        calculateNextVisitTime();
+        santaSchedule.calculateNextVisitTime();
     }
 
     private void resetPosition() {
@@ -50,14 +47,10 @@ class SantaTracker {
             x -= SPEED;
         }
         if (x > skyWidth || x < -santaWidth) {
-            calculateNextVisitTime();
+            santaSchedule.calculateNextVisitTime();
             flipDirection();
             resetPosition();
         }
-    }
-
-    private void calculateNextVisitTime() {
-        nextTimeInTown = clock.getCurrentTime() + MIN_INTERVAL_BETWEEN_VISITS;
     }
 
     private void flipDirection() {
@@ -81,7 +74,7 @@ class SantaTracker {
     }
 
     public boolean isSantaInTown() {
-        return clock.getCurrentTime() > nextTimeInTown;
+        return santaSchedule.isSantaInTown();
     }
 
     private enum Direction {
