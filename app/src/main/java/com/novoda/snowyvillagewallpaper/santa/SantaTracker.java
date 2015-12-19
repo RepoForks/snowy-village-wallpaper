@@ -1,7 +1,11 @@
 package com.novoda.snowyvillagewallpaper.santa;
 
+import java.util.Random;
+
 public class SantaTracker {
 
+    private static final float SKY_HEIGHT_FRACTION = 0.6f;
+    private static final float TOP_SKY_FRACTION = 0.1f;
     private static final float SPEED = 4.0f;
 
     private final float skyWidth;
@@ -28,7 +32,7 @@ public class SantaTracker {
     }
 
     private void resetPosition() {
-        y = initRandomY();
+        y = resetYToCentralHeight();
         if (direction == Direction.TO_RIGHT) {
             x = -santaWidth;
         } else {
@@ -36,8 +40,9 @@ public class SantaTracker {
         }
     }
 
-    private float initRandomY() {
-        return (float) ((Math.random() * (skyHeight - santaHeight) * 0.6f) + (skyHeight - santaHeight) * 0.1f);
+    private float resetYToCentralHeight() {
+        Random random = new Random();
+        return random.nextFloat() * (skyHeight - santaHeight) * SKY_HEIGHT_FRACTION + (skyHeight - santaHeight) * TOP_SKY_FRACTION;
     }
 
     public void updatePosition() {
