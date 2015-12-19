@@ -60,7 +60,7 @@ public class ParallaxWallpaper extends GLWallpaperService {
 
         @Override
         public void onOffsetsChanged(float xOffset, float yOffset, float xStep, float yStep, int xPixels, int yPixels) {
-            renderer.setOffset(xOffset);
+            renderer.setOffset(xOffset, xPixels);
             requestRender();
         }
     }
