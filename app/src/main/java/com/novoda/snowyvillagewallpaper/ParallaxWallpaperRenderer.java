@@ -198,9 +198,10 @@ public final class ParallaxWallpaperRenderer implements GLSurfaceView.Renderer {
 
     private void initSantaTracker() {
         SantaSchedule santaSchedule = SantaSchedule.newInstance();
+        Quad skyLayer = currentLayers.get(0);
         santaTracker = new SantaTracker(
-                currentLayers.get(0).getWidth(),
-                currentLayers.get(0).getHeight(),
+                skyLayer.getWidth(),
+                skyLayer.getHeight(),
                 santaToLeftLayer.getWidth(),
                 santaToLeftLayer.getHeight(),
                 santaSchedule
